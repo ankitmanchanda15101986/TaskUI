@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.task.common.dto.TaskDTO;
+import com.task.common.helper.TaskHelper;
 import com.task.common.response.Response;
 import com.task.service.TaskService;
 
@@ -31,7 +32,12 @@ public class TaskServiceImpl implements TaskService {
 		Date date = new Date();
 		String currentDate = format.format(date);
 		dto.setTaskCreationDate(currentDate);
-		Response result = template.postForObject( uri, dto, Response.class);
+		Response result;
+		try {
+			result = template.postForObject( uri, dto, Response.class);
+		} catch (Exception e) {
+			result = TaskHelper.errorResponse();
+		}
 		return result;
 	}
 
@@ -40,7 +46,12 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	public Response updateTask(TaskDTO dto) {
 		final String uri = "http://localhost:9003/mytask/api/updateTask";
-		Response result = template.postForObject( uri, dto, Response.class);
+		Response result;
+		try {
+			result = template.postForObject( uri, dto, Response.class);
+		} catch (Exception e) {
+			result = TaskHelper.errorResponse();
+		}
 		return result;	}
 
 	/**
@@ -48,7 +59,12 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	public Response deleteTask(Integer id) {
 		final String uri = "http://localhost:9003/mytask/api/deleteTask?id="+id;
-		Response result = template.getForObject(uri, Response.class, "");
+		Response result;
+		try {
+			result = template.getForObject(uri, Response.class, "");
+		} catch (Exception e) {
+			result = TaskHelper.errorResponse();
+		}
 		return result;
 	}
 
@@ -57,7 +73,12 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	public Response getTask(String status) {
 		final String uri = "http://localhost:9003/mytask/api/retrieveTask?status="+status;
-		Response result = template.getForObject(uri, Response.class, "");
+		Response result;
+		try {
+			result= template.getForObject(uri, Response.class, "");
+		} catch (Exception e) {
+				result = TaskHelper.errorResponse();
+		}
 		return result;
 	}
 	
@@ -66,21 +87,13 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	public Response markComplete(Integer id) {
 		final String uri = "http://localhost:9003/mytask/api/markComplete?id="+id;
-		Response result = template.getForObject(uri, Response.class, "");
+		Response result;
+		try {
+			result = template.getForObject(uri, Response.class, "");
+		} catch (Exception e) {
+			result = TaskHelper.errorResponse();
+		}
 		return result;
 	}
-	
-	public HttpHeaders getHeader() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		return headers;
-	}
-	
-	public HttpEntity<String> getHttpEntity() {
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", getHeader());
-		return entity;
-	}
-
-	
 
 }
