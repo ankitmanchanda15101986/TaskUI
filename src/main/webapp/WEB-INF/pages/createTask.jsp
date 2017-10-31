@@ -18,7 +18,9 @@
 </script>
 	<br />
 	<c:if test="${not empty status}">
-		<h2>${status}</h2>
+		<div class="alert alert-info">
+			<h2>${status}</h2>
+		</div>	
 	</c:if>
 	<form:form class="form-horizontal" method="post" modelAttribute="taskForm" action="createTaskResult">
 
