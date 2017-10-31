@@ -40,6 +40,9 @@ public class TaskController {
 		Response response = service.createNewTask(dto);
 		model.addAttribute("status", response.getStatus_msg());
 		model.addAttribute("response", response.getTaskList().get(0));
+		if(response.getStatus_codes().equalsIgnoreCase("200")) {
+			model.addAttribute("taskForm", new TaskDTO());
+		}
 		return "createTask";
 	}
 	
