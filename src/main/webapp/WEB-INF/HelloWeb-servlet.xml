@@ -26,4 +26,9 @@
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate"
 		autowire="default" />
+		
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages" />
+    </bean>
+    
 </beans>

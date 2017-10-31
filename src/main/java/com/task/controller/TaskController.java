@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,13 +37,24 @@ public class TaskController {
 	
 	
 	@RequestMapping(value="/createTaskResult",  produces = MediaType.APPLICATION_JSON_VALUE ,method=RequestMethod.POST)
-	private String createTaskResult(@ModelAttribute("taskForm") TaskDTO dto, Model model) {
-		Response response = service.createNewTask(dto);
-		model.addAttribute("status", response.getStatus_msg());
-		model.addAttribute("response", response.getTaskList().get(0));
-		if(response.getStatus_codes().equalsIgnoreCase("200")) {
-			model.addAttribute("taskForm", new TaskDTO());
-		}
+	private String createTaskResult(@ModelAttribute("taskForm") TaskDTO dto, Model model, BindingResult result) {
+		boolean error = false;
+		if(dto.getTaskName().isEmpty()){
+	        result.rejectValue("taskName", "error.name");
+	        error = true;
+	    }
+		if(dto.getTaskDescription().isEmpty()){
+	        result.rejectValue("taskDescription", "error.description");
+	        error = true;
+	    }
+		if(!error) {
+			Response response = service.createNewTask(dto);
+			model.addAttribute("status", response.getStatus_msg());
+			model.addAttribute("response", response.getTaskList().get(0));
+			if(response.getStatus_codes().equalsIgnoreCase("200")) {
+				model.addAttribute("taskForm", new TaskDTO());
+			}
+		} 
 		return "createTask";
 	}
 	
